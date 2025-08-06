@@ -11,12 +11,14 @@ const Profile = () => {
   const [postsSelected,setPostSelected] = useState(true);
   const navigate = useNavigate();
 
-  const{userPosts,getUserPosts} = useUserDataStore();
+  const{userPosts,getUserPosts,userSavedPosts,getUserSavedPosts} = useUserDataStore();
 
   useEffect(()=>{
     getUserData();
      getUserPosts();
+     getUserSavedPosts();
     console.log("User Posts in the Profile component : ",userPosts);
+    console.log("User Saved Posts in the Profile component : ",userSavedPosts);
   },[])
 
   const goToFollowers = () => {
@@ -25,6 +27,10 @@ const Profile = () => {
 
   const goToFollowings = () => {
     navigate('/Followings');
+  }
+
+  const goToEditProfile = () => {
+    navigate('/EditProfile');
   }
 
 
@@ -42,15 +48,15 @@ const Profile = () => {
     )
   }
   return (
-    <div className="flex justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg mr-[200px]">
-      <div className="space-y-10">
+    <div className="flex justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg mr-[200px] ">
+      <div className="space-y-5">
 
         {/* This is for the Personal data */}
-        <div className="flex mt-10 space-x-10">
+        <div className="flex mt-10 pb-4 space-x-10">
 
           {/* Div for Image  */}
-          <div className="w-[150px] h-[150px] bg-slate-300 rounded-full">
-            <img src={userData.profilePicture} ></img>
+          <div className="w-[150px] h-[150px] rounded-full">
+            <img src={userData.profilePicture} className="w-full h-full object-cover rounded-full"></img>
           </div>
 
 
@@ -60,7 +66,9 @@ const Profile = () => {
             {/* This is for Username and to edit profile */}
             <div className="flex items-center space-x-10">
               <h2 className="text-2xl">{userData.username}</h2>
-              <button className="bg-[#002233] text-white px-3 py-1 rounded">
+              <button 
+              onClick={goToEditProfile}
+              className="bg-[#002233] text-white px-3 py-1 rounded">
                 <p>Edit Profile</p>
               </button>
             </div>
@@ -86,18 +94,18 @@ const Profile = () => {
         </div>
 
         {/* This is to navigate to posts or saved posts */}
-        <div className="flex items-center">
+        <div className="flex items-center ">
 
           {/* This is for the posts */}
           <div className="flex items-center justify-center w-1/2">
-            <button>
-              <MdGridOn fontSize={"1.8rem"} />
+            <button onClick={()=>setPostSelected(true)}>
+              <MdGridOn fontSize={"1.8rem"}/>
             </button>
           </div>
 
           {/* This is for the saved posts */}
           <div className="flex items-center justify-center w-1/2 ">
-            <button>
+            <button onClick={()=>setPostSelected(false)}>
               <MdSaveAlt  fontSize={"1.8rem"}/>
             </button>
           </div>
@@ -116,11 +124,12 @@ const Profile = () => {
               })
             )) 
              : 
+            (userSavedPosts.length > 0 && 
             (
-              userData.savedPosts.map((postId ,index) => (
-                <PassivePost key={index} postId = {postId}/>
-              ))
-            )
+              userSavedPosts.map((post) => {
+                return (<PassivePost key={post._id} post = {post}/>)
+              })
+            ))
           }
         </div>
 

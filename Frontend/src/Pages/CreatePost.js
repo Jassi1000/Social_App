@@ -32,8 +32,10 @@ const CreatePost = () => {
         const formData = new FormData();
         formData.append("postFile",file);
         formData.append("caption",caption);
-        await createPost(formData);
-        await navigate("/Profile");
+        const res = await createPost(formData);
+        if(res){
+            navigate("/Profile");
+        }
         
     }
 

@@ -60,7 +60,7 @@ useEffect(() => {
         <div className="flex mt-10 space-x-10">
           {/* Div for Image  */}
           <div className="w-[150px] h-[150px] bg-slate-300 rounded-full">
-            <img src={otherUserData.otherUser.profilePicture} ></img>
+            <img src={otherUserData.otherUser.profilePicture} className="w-full h-full object-cover rounded-full"></img>
           </div>
           {/* For the right section */}
           <div className="flex flex-col space-y-5">

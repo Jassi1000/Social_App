@@ -36,7 +36,7 @@ const Followings = () => {
                     <div key={followingUser._id}>
                         <div className="flex items-center w-full mb-2 space-x-2">
                             <div className="w-[100px] h-[100px] rounded-full ">
-                                <img src={followingUser.profilePicture} ></img>
+                                <img src={followingUser.profilePicture} className="w-full h-full object-cover rounded-full"></img>
                             </div>
                             <div className='flex w-4/6 pr-5 justify-between '>
                                 <button className="font-bold text-2xl" onClick={()=>otherUserHandle(followingUser._id)}>

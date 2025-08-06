@@ -12,6 +12,8 @@ import Profile from "./Pages/Profile";
 import OtherUserProfile from "./Pages/OtherUserProfile";
 import Followers from "./Pages/Followers";
 import Followings from "./Pages/Followings";
+import EditProfile from "./Pages/EditProfile";
+import { GoHomeFill } from "react-icons/go";
 import React from "react";
 
 
@@ -43,11 +45,11 @@ function App() {
     return (
       <div className="relative min-h-screen flex flex-col items-center justify-center px-4">
       {/* Background SVG */}
-      <img
+      {/* <img
         src="./assets/dashboard_background.svg"
         alt="Background"
         className="absolute inset-0 w-full h-full object-cover -z-10"
-      />
+      /> */}
         <Loading />
       </div>
     );
@@ -58,19 +60,28 @@ function App() {
     // flex items-center justify-between w-screen h-screen 
     <div className="relative min-h-screen flex items-center justify-end px-4">
       {/* Background SVG */}
-      <img
+      {/* <img
         src="./assets/dashboard_background.svg"
         alt="Background"
         className="absolute inset-0 w-full h-full object-cover -z-10"
-      />
+      /> */}
     {
       isAuthenticated ? (
       <div className="flex items-center justify-between w-[200px] h-screen fixed top-0 left-0">
         {/* This is the Navbar */}
         <div className="flex flex-col items-center justify-center ml-10 space-y-4 ">
-            <NavLink to="/dashboard" className="bg-[#002233] text-white px-4 py-2 rounded">Home</NavLink>
-            <NavLink to="/CreatePost" className="bg-[#002233] text-white px-4 py-2 rounded">Create</NavLink>
-            <NavLink to="/Profile" className="bg-[#002233] text-white px-4 py-2 rounded">Profile</NavLink>
+            <NavLink to="/dashboard" className=" px-2 py-2 rounded flex items-center space-x-4">
+            <GoHomeFill fontSize={"1.8rem"}/>
+            <p className="text-lg">Home</p>
+            </NavLink>
+            <NavLink to="/CreatePost" className="bg-[#002233] text-white px-4 py-2 rounded">
+            <GoHomeFill fontSize={"1.8rem"}/>
+            <p className="text-lg">Create</p>
+            </NavLink>
+            <NavLink to="/Profile" className="bg-[#002233] text-white px-4 py-2 rounded">
+            <GoHomeFill fontSize={"1.8rem"}/>
+            <p className="text-lg">Profile</p>
+            </NavLink>
             <button onClick={logoutHandler} className="bg-[#002233] text-white px-4 py-2 rounded">Logout</button>
         </div>
     </div>
@@ -87,7 +98,8 @@ function App() {
         <Route path="/CreatePost" element={isAuthenticated ? (<CreatePost/>) : (<Login />)} />
         <Route path="/OtherUserProfile" element={isAuthenticated ? (<OtherUserProfile/>) : (<Login />)} />
         <Route path="/Followers" element={isAuthenticated ? (<Followers/>) : (<Login />)} />
-        <Route path="/Followings" element={isAuthenticated ? (<Followings/>) : (<Login />)} />  
+        <Route path="/Followings" element={isAuthenticated ? (<Followings/>) : (<Login />)} />
+        <Route path="/EditProfile" element={isAuthenticated ? (<EditProfile/>) : (<Login />)} />  
       </Routes>
     </div>
   );

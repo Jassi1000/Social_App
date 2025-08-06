@@ -12,6 +12,16 @@ export const useInteractionStore = create((set) => ({
         }
     },
 
+    savePost: async (postId) => {
+        try {
+            const response = await axiosInstance.put(`/interactions/savePost/${postId}`);
+            console.log("Post Saved successfully:", response);
+            // Optionally, you can update the state here if needed
+        } catch (error) {
+            console.error("Error Saving post:", error);
+        }
+    },
+
     commentPost: async (postId,mycomment) => {
         try {
             const response = await axiosInstance.post(`/interactions/commentPost/${postId}`,{content:mycomment});

@@ -36,7 +36,7 @@ exports.updateProfile = async (req, res) => {
         }
         if(username) {
             const existingUser = await User.find({ username });
-            if(existingUser.length > 0) {
+            if(existingUser.length > 0 && existingUser._id !== user._id) {
                 return res.status(400).json({ message: 'Username already exists' });
             }
             user.username = username;

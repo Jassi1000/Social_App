@@ -9,6 +9,8 @@ export const useCreateStore = create((set,get) => ({
                     "Content-Type": "multipart/form-data",
                 },
             })
+            console.log("This is the response to create post : ",response);
+            return response;
         }
         catch(err){
             console.error("Error while creating the post : ",err);
