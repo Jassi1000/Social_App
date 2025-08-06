@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 require('dotenv').config();
 
@@ -13,7 +14,11 @@ const createRouter = require('./Routers/create');
 const interactionRouter = require('./Routers/interaction');
 const getRouter = require('./Routers/getData');
 
-
+app.use(cors({
+  origin: [process.env.CLIENT_URL,"http://localhost:3001"],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(fileUpload({

@@ -20,9 +20,10 @@ exports.likePost = async (req, res) => {
         }
         const existingLike = await Like.findOne({ post: postId, likeBy: userId });
         if(existingLike){
+            await User.findByIdAndUpdate({ _id: userId }, { $pull: { likes: postId } }, { new: true });
             await Like.findByIdAndDelete({_id:existingLike._id});
-            await Post.findByIdAndUpdate({_id:post._id}, { $pull: { likes: userId } },{new:true});
-            return res.status(200).json({ message: 'Post unliked successfully', post });
+            const updatedPost = await Post.findByIdAndUpdate({_id:post._id}, { $pull: { likes: userId } },{new:true});
+            return res.status(200).json({ message: 'Post unliked successfully', updatedPost });
         }
         const newLike = await Like.create({
             post: postId,
@@ -160,6 +161,37 @@ exports.acceptFollow = async (req,res) => {
         }
         res.status(200).json({message:"Accepting Request is Succesfull"});
         
+    }
+    catch(err){
+        console.error('Error Accepting the follow request:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.removeFromFollowers = async (req,res) => {
+    try{
+        const userId = req.user.id;
+        const otherUserId = req.params.otherUserId;
+        if(!otherUserId) {
+            return res.status(400).json({ message: 'Follow user ID is required' });
+        }
+        const userToRemove = await User.findById({ _id: otherUserId });
+        if(!userToRemove) {
+            return res.status(404).json({ message: 'User to follow not found' });
+        }
+        const user = await User.findById({_id:userId});
+        if(!user){
+            return res.status(400).json({message: 'You are Not found in the database'});
+        }
+        // if(user.followers.includes(otherUserId) === null){
+        //     res
+        // }
+        const updatedUser = await User.findByIdAndUpdate({_id:user._id},{$pull : {followers:otherUserId}},{new:true});
+        await User.findByIdAndUpdate({_id:userToRemove._id},{$pull:{following:user._id}},{new:true});
+        if(!updatedUser){
+            return res.status(404).json({ message: 'Error while updating the Database' });
+        }
+        res.status(200).json({message:"Removing from Following is Succesfull"});
     }
     catch(err){
         console.error('Error Accepting the follow request:', err);
