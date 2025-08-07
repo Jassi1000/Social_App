@@ -197,3 +197,20 @@ exports.getCommentsOnPost = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+exports.searchUser = async (req,res) => {
+    try{
+        const query = req.query.query;
+        if(!query){
+            return res.status(400).json({ error: "Query param is required" });
+        }
+
+        const users = await User.find({username : {$regex : query , $options: 'i'} })
+                               .select("username profilePicture _id").limit(10);
+        res.status(200).json({message : "Here are the users based on your search" ,users });
+    }
+    catch(err){
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}

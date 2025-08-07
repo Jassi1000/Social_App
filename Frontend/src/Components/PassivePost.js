@@ -143,7 +143,7 @@ const PassivePost = ({post}) =>{
                         <div className="flex space-x-1">
                             <FaComment fontSize={"1.3rem"} color="white"/>
                             <p className="pl-1">
-                                {post.comments.length}
+                                {post.comments.length + mycomment.length}
                             </p>
                         </div>
                         }
@@ -221,7 +221,7 @@ const PassivePost = ({post}) =>{
                                     )
                                 }
                                 {
-                                    comments.length > 0 ?
+                                    comments.length > 0 &&
                                     (
                                         comments.map((comment) => (
                                             <div key={comment._id} className="flex items-center w-full mb-2 space-x-2  pb-2 pl-3">
@@ -238,12 +238,12 @@ const PassivePost = ({post}) =>{
                                             </div>
                                         ))
                                     )
-                                    :
-                                    (
+                                }
+                                {
+                                    comments.length === 0 && mycomment.length === 0 &&
                                         <div>
-                                            <p>No Comments yet</p>
+                                            <p className="text-sm text-gray-400">No Comments yet</p>
                                         </div>
-                                    )
                                 }
                             </div>
                             </div>

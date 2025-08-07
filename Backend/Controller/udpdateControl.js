@@ -23,6 +23,13 @@ exports.updateProfile = async (req, res) => {
         if(profilePicture && !supprortedFiles.includes(profilePicture.mimetype.split('/')[1])) {
             return res.status(400).json({ message: 'Unsupported file type' });
         }
+        if(username) {
+            const existingUser = await User.find({ username }).select("-password");
+            if(existingUser.length > 0 && existingUser[0]._id.toJSON() !== id) {
+                return res.status(400).json({ message: 'Username already exists' ,existingUser :existingUser[0]});
+            }
+            user.username = username;
+        }
         if(profilePicture) {
             // Assuming you have a function to upload to Cloudinary
             const cloudinaryResponse = await uploadFileToCloudinary(profilePicture,'Social_app');
@@ -33,13 +40,6 @@ exports.updateProfile = async (req, res) => {
         }   
         if(bio) {
             user.bio = bio;
-        }
-        if(username) {
-            const existingUser = await User.find({ username });
-            if(existingUser.length > 0 && existingUser._id !== user._id) {
-                return res.status(400).json({ message: 'Username already exists' });
-            }
-            user.username = username;
         }
         const updatedUser = await User.findByIdAndUpdate({ _id: user.id },{username:user.username, bio:user.bio, profilePicture:user.profilePicture},{new:true});
         if(!updatedUser) {

@@ -68,7 +68,7 @@ const Profile = () => {
               <h2 className="text-2xl">{userData.username}</h2>
               <button 
               onClick={goToEditProfile}
-              className="bg-[#002233] text-white px-3 py-1 rounded">
+              className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
                 <p>Edit Profile</p>
               </button>
             </div>

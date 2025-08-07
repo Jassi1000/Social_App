@@ -5,9 +5,11 @@ export const useDataStore = create((set,get) => ({
     dataLoading: true,
     otherUserData:null,
     otherUserId : null,
+    searchLoading:false,
     posts: [],
     following:[],
     followers:[],
+    searchResults:[],
 
     // CommentsOnPost: {},
     getPosts: async () => {
@@ -88,6 +90,27 @@ export const useDataStore = create((set,get) => ({
         catch(error){
             console.error("Get Follwers Error:", error);
         }
-    }
+    },
+
+    searchUsers: async(query) => {
+        if(!query || query.trim() === ""){
+            set({searchResults:[]});
+            return;
+        }
+
+        try{
+            set({searchLoading:true});
+            const response = await axiosInstance.get(`/getData/searchUser?query=${query}`);
+            set({searchResults:response.data.users,searchLoading:false})
+        }
+        catch(err){
+            console.error("Search error:", err);
+            set({ searchResults: [], searchLoading: false });
+        }
+    },
+
+    setSearchLoading : (is)=> set({searchLoading:is}),
+
+    clearSearch: () => set({ searchResults: [] })
 
 }));

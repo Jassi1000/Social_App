@@ -2,7 +2,7 @@ import "./App.css";
 import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import CreatePost from "./Pages/CreatePost";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "./Store/auth";
 import Loading from "./Components/Loading";
 import Dashboard from "./Pages/Dashboard";
@@ -17,7 +17,11 @@ import { GoHomeFill } from "react-icons/go";
 import { MdOutlineAddBox } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { RiLogoutBoxLine } from "react-icons/ri";
+import { Bold, Search } from "lucide-react";
 import React from "react";
+import SearchBar from "./Components/SearchBar";
+import { fontWeight } from "@mui/system";
+
 
 
 function App() {
@@ -25,6 +29,7 @@ function App() {
 
   const { checkAuth , loading ,isAuthenticated , logout} = useAuthStore();
   const navigate = useNavigate();
+  const [isSearching,setIsSearching] = useState(false);
 
   // Check authentication status on app load
   useEffect(() => {
@@ -70,13 +75,20 @@ function App() {
       /> */}
     {
       isAuthenticated ? (
-      <div className="flex items-center justify-between w-[250px] h-screen fixed top-0 left-0 border-r-4">
+      <div className="flex justify-center w-[250px] h-screen fixed top-0 left-0 border-r-2">
         {/* This is the Navbar */}
-        <div className="flex flex-col items-center justify-center mx-4  space-y-4 w-full">
+        <div className="flex flex-col items-center mt-24 mx-4 space-y-4 w-full">
+          <h1 className="text-[40px] mb-16" style={{ fontFamily: 'Billabong, sans-serif' }}>
+            SocialApp
+          </h1>
             <NavLink to="/dashboard" className={({ isActive }) => `px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 transition-colors duration-200 ${isActive ? "font-bold" : ""}`}>
             <GoHomeFill fontSize={"1.8rem"}/>
             <p className="text-lg">Home</p>
             </NavLink>
+            <button onClick={()=>setIsSearching(!isSearching)}  style={{fontWeight:isSearching ? 'bold' : 'normal'}} className="px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 active:font-bold transition-colors duration-200">
+            <Search className="w-7 h-7 "/>
+            <p className="text-lg">Search</p>
+            </button>
             <NavLink to="/CreatePost" className={({ isActive }) => `px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 transition-colors duration-200 ${isActive ? "font-bold" : ""}`}>
             <MdOutlineAddBox  fontSize={"1.8rem"}/>
             <p className="text-lg">Create</p>
@@ -94,6 +106,10 @@ function App() {
       ):
       (<div>
       </div>)
+    }
+    {
+      isSearching && 
+      <SearchBar setIsSearching = {setIsSearching}/>
     }
       <Routes>
         <Route path="/" element={isAuthenticated ? (<Dashboard/>) : (<Login />)} />

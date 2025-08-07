@@ -66,9 +66,6 @@ useEffect(() => {
           <div className="flex flex-col space-y-5">
             <div className="flex items-center space-x-10">
               <h2 className="text-2xl">{otherUserData.otherUser.username}</h2>
-              <button className="bg-[#002233] text-white px-3 py-1 rounded">
-                <p>Edit Profile</p>
-              </button>
             </div>
 
 

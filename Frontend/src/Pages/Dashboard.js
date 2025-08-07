@@ -23,7 +23,18 @@ const Dashboard = () => {
   useEffect(() => {
     console.log("Dashboard ala chalea")
     fetchPosts();
-  }, [getPosts]);
+  }, []);
+
+//   useEffect(() => {
+//   const handleScroll = () => {
+//     if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+//       fetchPosts();
+//     }
+//   };
+
+//   window.addEventListener('scroll', handleScroll);
+//   return () => window.removeEventListener('scroll', handleScroll);
+// }, []);
 
   if (dataLoading) {
     return (

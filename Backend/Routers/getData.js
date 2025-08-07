@@ -1,5 +1,5 @@
 const express = require("express");
-const { getPosts, getUserPosts, getFollowers, getFollowing, getOtherUserDetails, getUserDetails, getCommentsOnPost, getUserSavedPosts } = require("../Controller/getDataControl");
+const { getPosts, getUserPosts, getFollowers, getFollowing, getOtherUserDetails, getUserDetails, getCommentsOnPost, getUserSavedPosts, searchUser } = require("../Controller/getDataControl");
 const { protect } = require("../Middeware/protect");
 const getRouter = express.Router()
 
@@ -10,6 +10,7 @@ getRouter.get("/getFollowers", protect, getFollowers);
 getRouter.get("/getFollowing", protect, getFollowing);
 getRouter.get("/getOtherUserDetails/:otherUserId", protect, getOtherUserDetails);
 getRouter.get("/getUserDetails", protect, getUserDetails);
+getRouter.get("/searchUser", protect, searchUser);
 getRouter.get("/getCommentsOnPost/:postId", protect, getCommentsOnPost);
 
 module.exports = getRouter;

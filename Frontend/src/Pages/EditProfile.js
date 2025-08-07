@@ -48,6 +48,7 @@ const EditProfile = () => {
         catch(err){
             setUploadingError(err.response.data.message);
             console.error("The Updating Profile Error : ",err.response.data.message);
+            console.error("The Updating Profile Error : ",err.response.data);
         }
     }
 
@@ -57,8 +58,7 @@ const EditProfile = () => {
         formData.append("profilePic",file);
         formData.append("username",changesProfile.username);
         formData.append("bio",changesProfile.bio);
-        const res = await updateProfile(formData);
-        console.log("we have to do something with that --> ",res);
+        updateProfile(formData);
         
     }
 
