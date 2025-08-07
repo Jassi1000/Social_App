@@ -14,6 +14,9 @@ import Followers from "./Pages/Followers";
 import Followings from "./Pages/Followings";
 import EditProfile from "./Pages/EditProfile";
 import { GoHomeFill } from "react-icons/go";
+import { MdOutlineAddBox } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import { RiLogoutBoxLine } from "react-icons/ri";
 import React from "react";
 
 
@@ -58,7 +61,7 @@ function App() {
 
   return (
     // flex items-center justify-between w-screen h-screen 
-    <div className="relative min-h-screen flex items-center justify-end px-4">
+    <div className="relative min-h-screen flex items-center justify-center px-4">
       {/* Background SVG */}
       {/* <img
         src="./assets/dashboard_background.svg"
@@ -67,22 +70,25 @@ function App() {
       /> */}
     {
       isAuthenticated ? (
-      <div className="flex items-center justify-between w-[200px] h-screen fixed top-0 left-0">
+      <div className="flex items-center justify-between w-[250px] h-screen fixed top-0 left-0 border-r-4">
         {/* This is the Navbar */}
-        <div className="flex flex-col items-center justify-center ml-10 space-y-4 ">
-            <NavLink to="/dashboard" className=" px-2 py-2 rounded flex items-center space-x-4">
+        <div className="flex flex-col items-center justify-center mx-4  space-y-4 w-full">
+            <NavLink to="/dashboard" className={({ isActive }) => `px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 transition-colors duration-200 ${isActive ? "font-bold" : ""}`}>
             <GoHomeFill fontSize={"1.8rem"}/>
             <p className="text-lg">Home</p>
             </NavLink>
-            <NavLink to="/CreatePost" className="bg-[#002233] text-white px-4 py-2 rounded">
-            <GoHomeFill fontSize={"1.8rem"}/>
+            <NavLink to="/CreatePost" className={({ isActive }) => `px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 transition-colors duration-200 ${isActive ? "font-bold" : ""}`}>
+            <MdOutlineAddBox  fontSize={"1.8rem"}/>
             <p className="text-lg">Create</p>
             </NavLink>
-            <NavLink to="/Profile" className="bg-[#002233] text-white px-4 py-2 rounded">
-            <GoHomeFill fontSize={"1.8rem"}/>
+            <NavLink to="/Profile" className={({ isActive }) => `px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 transition-colors duration-200 ${isActive ? "font-bold" : ""}`}>
+            <CgProfile  fontSize={"1.8rem"}/>
             <p className="text-lg">Profile</p>
             </NavLink>
-            <button onClick={logoutHandler} className="bg-[#002233] text-white px-4 py-2 rounded">Logout</button>
+            <button onClick={logoutHandler} className="px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 active:font-bold transition-colors duration-200">
+            <RiLogoutBoxLine   fontSize={"1.8rem"}/>
+            <p className="text-lg">Logout</p>
+            </button>
         </div>
     </div>
       ):

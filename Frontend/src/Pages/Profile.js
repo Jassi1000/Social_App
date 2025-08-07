@@ -42,13 +42,13 @@ const Profile = () => {
   console.log(userData);
   if(!userData){
     return(
-      <div className="flex justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg mr-[200px]">
+      <div className="flex justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg">
         Loading...
       </div>
     )
   }
   return (
-    <div className="flex justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg mr-[200px] ">
+    <div className="flex justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg ">
       <div className="space-y-5">
 
         {/* This is for the Personal data */}

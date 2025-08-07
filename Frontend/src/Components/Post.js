@@ -12,6 +12,7 @@ import { axiosInstance } from '../lib/axios';
 import { formatDistanceToNowStrict } from 'date-fns';
 import { GoComment } from "react-icons/go";
 import { FaRegComment } from "react-icons/fa";
+import { Heart ,MessageCircle ,Bookmark} from "lucide-react";
 
 const Post = ({post}) => {
 
@@ -56,7 +57,7 @@ const Post = ({post}) => {
             } catch (error) {
                 console.error("Get Comments Error:", error);
             }
-        }
+    }
 
     useEffect(()=>{
         if(comments && !commentsOnPost){
@@ -135,23 +136,24 @@ const Post = ({post}) => {
 }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full  mb-4 p-4 border-b-4">
+    <div className="flex flex-col items-center justify-center w-full  mb-4 p-4 border-b-2">
 
         {/* This is for Posted By */}
         <div className="flex items-center w-full mb-2 space-x-2">
-            <div className="w-[50px] h-[50px] rounded-full ">
-                <img src={post.userid.profilePicture} className="w-full h-full object-cover rounded-full"></img>
+            <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0 ">
+                <img src={post.userid.profilePicture} className="w-full h-full object-cover block rounded-full"></img>
             </div>
             <button className="font-bold text-sm" onClick={otherUserHandleFromPost}>{post.userid.username}</button>
         </div>
 
         {console.log("Rendering Post:", post)}
+        <div className= "w-full h-[500px] overflow-hidden flex-shrink-0">
             {
                     isImage(post.content) ? 
 
                     //This is for the image Post
                     (
-                        <img src={post.content} className="w-full h-full rounded-lg"></img>
+                        <img src={post.content} className="w-full h-full object-cover rounded-lg"></img>
                     ) : 
 
                     //This for the video Post
@@ -169,9 +171,29 @@ const Post = ({post}) => {
                         </div>
                     )
             }
+            </div>
+
+            
+
+            {/* These are the icons */}
+            <div className="flex items-center justify-between space-x-4 w-full mt-2 pr-2">
+                <div className="flex items-center space-x-4 ">
+                <button onClick={likeHandler}>
+                    <Heart className={`w-7 h-7 transition-all duration-200 ${isLiked ? 'text-red-500 scale-110' : 'text-black scale-100'}`} fill={isLiked ? 'red' : 'none'} color={isLiked ? 'red' : 'black'} />
+                </button>
+
+                <button type="button" onClick={commentHandler}>
+                    <MessageCircle className={`w-7 h-7 transition-all duration-200 ${comments ? 'text-green-600 scale-110' : 'text-black scale-100'}`} fill={comments ? 'blue' : 'none'} color={comments ? 'blue' : 'black'} />
+                </button>
+                </div>
+
+                <button onClick={savedHanler}>
+                    <Bookmark className={`w-7 h-7 transition-all duration-200 ${isSaved ? 'text-blue-600 scale-110' : 'text-black scale-100'}`} fill={isSaved ? 'blue' : 'none'} color={isSaved ? 'blue' : 'black'} />
+                </button>
+            </div>
 
             {/* This is for the Caption */}
-            <p className="text-sm mt-2 w-full">
+            <p className="text-sm mt-4 w-full">
                 {
                     fullCaption ? post.caption : post.caption.length > 100 ? post.caption.slice(0, 100) + "..." : post.caption
                 }
@@ -183,38 +205,12 @@ const Post = ({post}) => {
                 </button>
             </p>
 
-            {/* These are the icons */}
-            <div className="flex items-center justify-between space-x-4 w-full mt-2 pr-2">
-                <div className="flex items-center space-x-4 ">
-                <button onClick={likeHandler}>
-                    {
-                    isLiked ? 
-                    (<FcLike fontSize={"1.8rem"} />)
-                     : 
-                    (<FcLikePlaceholder fontSize={"1.8rem"}/>)
-                    }
-                </button>
-
-                <button type="button" onClick={commentHandler}>
-                    <FaRegComment   fontSize={"1.8rem"} color="black"/>
-                </button>
-                </div>
-
-                <button onClick={savedHanler}>
-                    {
-                    isSaved ? 
-                    (<FaBookmark  fontSize={"1.6rem"} />)
-                     : 
-                    (<FaRegBookmark  fontSize={"1.6rem"}/>)
-                    }
-                </button>
-            </div>
-
             {/* This is for the comments */}
-            <div className="w-full mt-4 flex flex-col">
+            <div className="w-full flex flex-col">
                 { comments &&
                 (
-                        commentsOnPost ? (
+                    <div className="mt-4">
+                        {commentsOnPost || mycomment.length > 0 ? (
                             <div>
                                 <p>Comments...</p>
                                 <div className="max-h-[300px] overflow-y-auto">
@@ -223,12 +219,12 @@ const Post = ({post}) => {
                                     mycomment.map((comment) => (
                                         //This is for the comments send
                                         <div className="p-2 flex items-start min-h-[60px] mb-2">
-                                            <div className="w-[50px] h-[50px] rounded-full ">
+                                            <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0  ">
                                                 <img src={userData.profilePicture} className="w-full h-full object-cover rounded-full"></img>
                                             </div>
                                             <div className="ml-2 space-y-1">
                                                 <p className="font-bold text-sm">{userData.username}</p>
-                                                <p className="text-sm leading-3">{comment}</p>
+                                                <p className="text-sm leading-5">{comment}</p>
                                                 <p className="text-xs text-gray-500">now</p>
                                             </div>
                                         </div>
@@ -238,12 +234,12 @@ const Post = ({post}) => {
                                 {
                                 commentsOnPost.map((comment) => (
                                     <div key={comment._id} className="p-2 flex items-start min-h-[60px] mb-2">
-                                        <div className="w-[50px] h-[50px] rounded-full ">
+                                        <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0 ">
                                             <img src={comment.commentBy.profilePicture} className="w-full h-full object-cover rounded-full"></img>
                                         </div>
                                         <div className="ml-2 space-y-1">
                                             <button className="font-bold text-sm" onClick={()=>otherUserHandleFromComment(comment.commentBy._id)}>{comment.commentBy.username}</button>
-                                            <p className="text-sm leading-3">{comment.content}</p>
+                                            <p className="text-sm leading-5">{comment.content}</p>
                                             <p className="text-xs text-gray-500">{getCustomTimeAgo(comment.createdAt)}</p>
                                         </div>
                                     </div>
@@ -251,7 +247,12 @@ const Post = ({post}) => {
                                 }
                                 </div>
 
-                                {/* This is to send the the comment  */}
+                                
+                            </div>
+                        ) : (
+                            <p className="text-gray-500">No comments yet.</p>
+                        )}
+                        {/* This is to send the the comment  */}
                                 <div>
                                     <div className="flex items-center mb-2 pt-2 border-t-2">
                                         <div className="w-[40px] h-[40px] rounded-full ">
@@ -270,10 +271,7 @@ const Post = ({post}) => {
                                         <button className="text-blue-600 font-bold" onClick={sendCommentHandler}>send</button>
                                     </div>
                                 </div>
-                            </div>
-                        ) : (
-                            <p className="text-gray-500">No comments yet.</p>
-                        )
+                    </div>
                 )
                 }
             </div>

@@ -52,7 +52,7 @@ useEffect(() => {
   console.log(otherUserData);
   console.log(otherUserId)
   return (
-    <div className="flex justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg mr-[200px]">
+    <div className="flex justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg">
         {
             otherUserData ? 
             (

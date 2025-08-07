@@ -38,9 +38,9 @@ const CreatePost = () => {
         }
         
     }
-
+// mr-[200px]
   return (
-    <div className="flex items-center justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg mr-[200px]">
+    <div className="flex items-center justify-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg ">
         <div className='flex flex-col items-center space-y-4 p-4'>
         <div className="flex flex-col items-center space-y-4 p-4">
             <input type="file" accept="image/*,video/*" onChange={handleFileChange} 

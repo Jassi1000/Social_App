@@ -26,7 +26,7 @@ const Followings = () => {
 
     console.log("Followings are --> ",following);
   return (
-    <div className="flex flex-col items-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg mr-[200px]">
+    <div className="flex flex-col items-center w-[700px] min-h-screen bg-white rounded-lg shadow-lg ">
         <p className='pt-5 text-2xl text-gray-300 border-b-2'>Followings...</p>
         <div className='p-10 w-full'>
             {

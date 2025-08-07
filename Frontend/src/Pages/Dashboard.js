@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useDataStore } from "../Store/getData";
 import Post from "../Components/Post";
 import { useUserDataStore } from "../Store/userData";
+import Loading from "../Components/Loading";
 
 const Dashboard = () => {
 
@@ -25,13 +26,23 @@ const Dashboard = () => {
   }, [getPosts]);
 
   if (dataLoading) {
-    return <div className="flex items-center justify-center w-full min-h-screen">Loading...</div>;
+    return (
+      <div className="relative min-h-screen flex flex-col items-center justify-center px-4">
+      {/* Background SVG */}
+      {/* <img
+        src="./assets/dashboard_background.svg"
+        alt="Background"
+        className="absolute inset-0 w-full h-full object-cover -z-10"
+      /> */}
+        <Loading />
+      </div>
+    )
   }
   
   return ( 
-    <div className=" flex items-center justify-center w-[500px] min-h-screen bg-white rounded-lg shadow-lg mr-[200px]">
+    <div className=" flex items-center justify-center w-[500px] min-h-screen bg-white rounded-lg shadow-lg ">
       { posts.length > 0 ? (
-        <div className="w-full p-4">
+        <div className="w-full p-4 will-change-transform">
           {posts.map((post) => (
             <MemoizedPost key={post._id} post = {post} postId = {post._id}/>
           ))}
