@@ -21,6 +21,8 @@ import { Bold, Search } from "lucide-react";
 import React from "react";
 import SearchBar from "./Components/SearchBar";
 import { fontWeight } from "@mui/system";
+import CreateStory from "./Pages/CreateStory";
+import Archieve from "./Pages/Archieve";
 
 
 
@@ -118,9 +120,11 @@ function App() {
         <Route path="/login" element={isAuthenticated ? (<Dashboard/>) : (<Login />)} />
         <Route path="/profile" element={isAuthenticated ? (<Profile/>) : (<Login />)} />
         <Route path="/CreatePost" element={isAuthenticated ? (<CreatePost/>) : (<Login />)} />
+        <Route path="/CreateStory" element={isAuthenticated ? (<CreateStory/>) : (<Login />)} />
         <Route path="/OtherUserProfile" element={isAuthenticated ? (<OtherUserProfile/>) : (<Login />)} />
         <Route path="/Followers" element={isAuthenticated ? (<Followers/>) : (<Login />)} />
         <Route path="/Followings" element={isAuthenticated ? (<Followings/>) : (<Login />)} />
+        <Route path="/Archieve" element={isAuthenticated ? (<Archieve/>) : (<Login />)} />
         <Route path="/EditProfile" element={isAuthenticated ? (<EditProfile/>) : (<Login />)} />  
       </Routes>
     </div>

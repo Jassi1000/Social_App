@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
+const cron = require('node-cron');
+const {app,server} = require('./Network/socket')
 require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
@@ -13,6 +14,7 @@ const { cloudinaryConnect } = require('./config/cloudinary');
 const createRouter = require('./Routers/create');
 const interactionRouter = require('./Routers/interaction');
 const getRouter = require('./Routers/getData');
+const { archieveExpiredStories } = require('./Jobs/archieveExpiredStories');
 
 app.use(cors({
   origin: [process.env.CLIENT_URL,"http://localhost:3001"],
@@ -32,8 +34,13 @@ app.use('/api/v1/interactions', interactionRouter);
 app.use('/api/v1/getData', getRouter);
 cloudinaryConnect();
 db.connectDB();
+archieveExpiredStories();
+cron.schedule('0 * * * *', ()=>{
+  console.log("Running archieve job");
+  archieveExpiredStories();
+})
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 

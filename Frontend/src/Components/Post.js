@@ -134,9 +134,9 @@ const Post = ({post}) => {
     .replace('years', 'yr')
     .replace('year', 'yr');
 }
-
+//mb-4
   return (
-    <div className="flex flex-col items-center justify-center w-full  mb-4 p-4 border-b-2">
+    <div className="flex flex-col items-center justify-center w-full   p-4 border-b-2">
 
         {/* This is for Posted By */}
         <div className="flex items-center w-full mb-2 space-x-2">

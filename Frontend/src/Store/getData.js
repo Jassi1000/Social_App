@@ -7,6 +7,8 @@ export const useDataStore = create((set,get) => ({
     otherUserId : null,
     searchLoading:false,
     posts: [],
+    stories:[],
+    archievedStories:[],
     following:[],
     followers:[],
     searchResults:[],
@@ -111,6 +113,37 @@ export const useDataStore = create((set,get) => ({
 
     setSearchLoading : (is)=> set({searchLoading:is}),
 
-    clearSearch: () => set({ searchResults: [] })
+    clearSearch: () => set({ searchResults: [] }),
+
+    getStories: async () => {
+        set({dataLoading: true});
+        try {
+            const response = await axiosInstance.get('/getData/getStories');
+            console.log("Response fetched successfully:", response);
+            if (response.data.stories.length === 0) {
+                console.log("No Story available.");
+            }
+            set({ stories: response.data.stories });
+        } catch (error) {
+            console.error("Get Posts Error:", error);
+        } finally {
+            set({dataLoading: false});
+        }
+    },
+    getArchievedStories: async () => {
+        set({dataLoading: true});
+        try {
+            const response = await axiosInstance.get('/getData/getArchievedStories');
+            console.log("Response fetched successfully:", response);
+            if (response.data.archievedStories.length === 0) {
+                console.log("No Story available.");
+            }
+            set({ archievedStories: response.data.archievedStories });
+        } catch (error) {
+            console.error("Get Posts Error:", error);
+        } finally {
+            set({dataLoading: false});
+        }
+    },
 
 }));

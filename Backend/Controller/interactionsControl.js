@@ -2,6 +2,7 @@ const User = require('../Models/User');
 const Comment = require('../Models/Comment');
 const Post = require('../Models/Post');
 const Like = require('../Models/Like');
+const Story = require('../Models/Story');
 
 exports.likePost = async (req, res) => {
     try{
@@ -248,6 +249,42 @@ exports.savePost = async (req, res) => {
     }
     catch(err){
         console.error('Error saving post:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.likeStory = async (req, res) => {
+    try{
+        const userId = req.user.id;
+        const storyId = req.params.storyId;
+        if(!storyId) {
+            return res.status(400).json({ message: 'Post ID is required' });
+        }
+        const user = await User.findById({ _id: userId });
+        if(!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const story = await Story.findById({_id : storyId});
+        if(!story) {
+            return res.status(404).json({ message: 'Story not found' });
+        }
+        const existingLike = story.likes.includes(userId);
+        if(existingLike){
+            await Story.findByIdAndUpdate({_id:storyId} , {$pull : {likes : userId}},{new:true});
+            return res.status(200).json({ message: 'Story unliked successfully' });
+        }
+        const updatedStory = await Story.findByIdAndUpdate(
+            { _id: story._id },
+            { $push: { likes: userId } },
+            { new: true }
+        );
+        if(!updatedStory) {
+            return res.status(500).json({ message: 'Error updating post likes' });
+        }
+        res.status(200).json({ message: 'Post liked successfully', story: updatedStory });
+    }
+    catch (error) {
+        console.error('Error liking post:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 }

@@ -1,5 +1,6 @@
 const User = require("../Models/User");
 const Post = require("../Models/Post");
+const Story = require("../Models/Story");
 
 exports.getPosts = async (req,res) => {
     try{
@@ -184,6 +185,7 @@ exports.getCommentsOnPost = async (req, res) => {
                                         select: 'username profilePicture'
                                     }
                                 });
+        //comments can be fetched by find comments by postid in comment schema
         if(!post){
             return res.status(404).json({ message: 'Post not found' });
         }
@@ -211,6 +213,58 @@ exports.searchUser = async (req,res) => {
     }
     catch(err){
         console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.getStories = async (req,res) => {
+    try{
+        const id =  req.user.id;
+        const user = await User.findById({_id:id});
+        if(!user){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const userToFetch = [...user.following,user._id];
+        const stories = await Story.find({
+            userid : {$in : userToFetch},
+            expiresAt : {$gt : new Date()},
+            isArchived : false
+        })
+        .populate({
+            path : "userid",
+            select : "_id username profilePicture"
+        })
+        .sort({createdAt : -1});
+        if(!stories){
+            return res.status(404).json({ message: 'No Stories found ' });
+        }
+        return res.status(200).json({ message: 'Stories fetched successfully', stories });
+    }
+    catch(err){
+        console.error('Error fetching Stories:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.getArchievedStories = async (req,res) => {
+    try{
+        const id =  req.user.id;
+        const user = await User.findById({_id:id});
+        if(!user){
+            return res.status(404).json({ message: "User not found" });
+        }
+        const stories = await Story.find({
+            userid : id,
+            isArchived : true
+        })
+        .sort({createdAt : -1});
+        if(!stories){
+            return res.status(404).json({ message: 'No Stories found ' });
+        }
+        return res.status(200).json({ message: 'Stories fetched successfully', archievedStories : stories });
+    }
+    catch(err){
+        console.error('Error fetching Archieved Stories:', err);
         return res.status(500).json({ message: 'Internal server error' });
     }
 }

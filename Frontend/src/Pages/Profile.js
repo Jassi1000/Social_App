@@ -4,10 +4,11 @@ import { MdGridOn } from "react-icons/md";
 import { MdSaveAlt } from "react-icons/md";
 import PassivePost from "../Components/PassivePost";
 import { useNavigate } from "react-router-dom";
+import { Settings, X } from "lucide-react";
 
 const Profile = () => {
   const {userData,getUserData} = useUserDataStore();
-
+  const [settings,setSettings] = useState(false);
   const [postsSelected,setPostSelected] = useState(true);
   const navigate = useNavigate();
 
@@ -71,6 +72,9 @@ const Profile = () => {
               className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition">
                 <p>Edit Profile</p>
               </button>
+              <button onClick={()=>setSettings(!settings)}>
+                <Settings className="h-8 w-8"/>
+              </button>
             </div>
 
 
@@ -92,6 +96,8 @@ const Profile = () => {
             </div>
           </div>
         </div>
+
+        {/* This is for the Highlights */}
 
         {/* This is to navigate to posts or saved posts */}
         <div className="flex items-center ">
@@ -135,6 +141,22 @@ const Profile = () => {
 
 
       </div>
+
+      {
+        settings &&
+        <div className="fixed top-5 right-10 shadow-2xl rounded-lg flex justify-center w-[250px] h-[500px] pt-14 border space-y-2">
+          <div className="w-[200px]">
+            <button 
+            onClick={()=>navigate('/Archieve')}
+            className="w-full p-2 hover:bg-gray-200 transition-colors duration-200 rounded-lg">
+              Archieve
+            </button>
+          </div>
+          <button className="absolute top-1 right-3" onClick={()=>setSettings(false)}>
+            <X className="w-8 h-8 text-gray-700"/>
+          </button>
+        </div>
+      }
     </div>
   );
 }   

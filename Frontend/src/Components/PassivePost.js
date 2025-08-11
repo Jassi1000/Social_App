@@ -53,6 +53,7 @@ const PassivePost = ({post}) =>{
         setShowPost(!showPost);
         if(comments.length < 1){
             getCommentsOnPost(post._id);
+            setMyComment([]);
         }
         if(post.likes.includes(userData._id)) setIsLiked(true);
         if(userData.savedPosts.includes(post._id)) setIsSaved(true);
@@ -66,7 +67,7 @@ const PassivePost = ({post}) =>{
 
     const otherUserHandleFromComment = (otherUserID) => {
         if(otherUserID === userData._id){
-            navigate('/Profile')
+            setShowPost(!showPost);
             return;
         }
         setOtherUserId(otherUserID);
@@ -196,7 +197,7 @@ const PassivePost = ({post}) =>{
                                 <div className="w-[40px] h-[40px] rounded-full ">
                                     <img src={post.userid._id ? post.userid.profilePicture : userData.profilePicture} className="w-full h-full object-cover rounded-full"></img>
                                 </div>
-                                <button className="font-bold text-sm" onClick={showMePost}>{post.userid._id ? post.userid.username : userData.username}</button>
+                                <button className="font-bold text-sm" onClick={()=>post.userid._id ? otherUserHandleFromComment(post.userid._id) : otherUserHandleFromComment(userData._id)}>{post.userid._id ? post.userid.username : userData.username}</button>
                             </div>
 
                             {/* To Show the comments on the Post */}

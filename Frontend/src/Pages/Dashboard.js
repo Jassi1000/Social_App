@@ -1,14 +1,16 @@
-import React, { memo, useEffect } from "react";
+import React, { memo, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useDataStore } from "../Store/getData";
 import Post from "../Components/Post";
 import { useUserDataStore } from "../Store/userData";
 import Loading from "../Components/Loading";
+import Stories from "../Components/Stories";
 
 const Dashboard = () => {
 
-  const {posts,dataLoading,getPosts} = useDataStore();
+  const {posts,stories,dataLoading,getPosts,getStories} = useDataStore();
   const { getUserData } = useUserDataStore();
+  const [fetched,setFetched] = useState(false);
   //This is used when you have large list of data and if something is changed for one element
   //of list then all the elements will be re-render , so to prevent this we use the memo
   const MemoizedPost = memo(Post);
@@ -16,6 +18,8 @@ const Dashboard = () => {
   async function fetchPosts() {
     await getUserData();
     await getPosts();
+    await getStories();
+    setFetched(true);
   }
 
 
@@ -36,7 +40,7 @@ const Dashboard = () => {
 //   return () => window.removeEventListener('scroll', handleScroll);
 // }, []);
 
-  if (dataLoading) {
+  if (dataLoading || !fetched) {
     return (
       <div className="relative min-h-screen flex flex-col items-center justify-center px-4">
       {/* Background SVG */}
@@ -51,9 +55,11 @@ const Dashboard = () => {
   }
   
   return ( 
-    <div className=" flex items-center justify-center w-[500px] min-h-screen bg-white rounded-lg shadow-lg ">
+    <div className=" flex flex-col items-center justify-center w-[500px] min-h-screen bg-white rounded-lg shadow-lg ">
+      <Stories stories = {stories}/>
       { posts.length > 0 ? (
-        <div className="w-full p-4 will-change-transform">
+        //pt-0 is not 
+        <div className="w-full p-4 pt-0 will-change-transform"> 
           {posts.map((post) => (
             <MemoizedPost key={post._id} post = {post} postId = {post._id}/>
           ))}
