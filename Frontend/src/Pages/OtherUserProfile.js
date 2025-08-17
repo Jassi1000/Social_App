@@ -4,6 +4,7 @@ import { MdSaveAlt } from "react-icons/md";
 import PassivePost from "../Components/PassivePost";
 import { useDataStore } from "../Store/getData";
 import { useInteractionStore } from "../Store/interaction";
+import OtherUserFollow from "../Components/OtherUserFollow";
 
 
 const OtherUserProfile = () => {
@@ -11,8 +12,11 @@ const OtherUserProfile = () => {
     const {requestToFollow} = useInteractionStore();
 //   const {userData,getUserData} = useUserDataStore();
 
+  // The logic of showData which is used for private account is pending
    const [showData,setShowData] = useState(true);
    const [isFollow,setIsFollow] = useState(false);
+   const [isShowFollow,setIsShowFollow] = useState(false);
+   const [Follow,setFollow] = useState([]);
 
 //   const{userPosts,getUserPosts} = useUserDataStore();
 
@@ -25,6 +29,8 @@ const OtherUserProfile = () => {
   useEffect(() => {
     console.log("challlpaaaaa")
     if (otherUserId) {
+      setFollow([]);
+      setIsShowFollow(false);
         console.log("Intehksdfjksadjf ::::: ",otherUserId)
         getOtherUserDetails();
     }
@@ -43,12 +49,23 @@ useEffect(() => {
     requestToFollow(otherUserId);
    }
 
+   const handleShowFollow = (Followers) => {
+    if(Followers){
+      setFollow(otherUserData.otherUser.followers)
+      setIsShowFollow(true)
+    }
+    else{
+      setFollow(otherUserData.otherUser.following)
+      setIsShowFollow(true);
+    }
+   }
+
 
   //UserData is still null 
   // useEffect(()=>{
   //   if(userData === null) getUserData();
   // },[userData,getUserData])
-
+  console.log("Is Show Follow ",isShowFollow)
   console.log(otherUserData);
   console.log(otherUserId)
   return (
@@ -68,14 +85,17 @@ useEffect(() => {
               <h2 className="text-2xl">{otherUserData.otherUser.username}</h2>
             </div>
 
-
+            {/* User information */}
             <div className="flex items-center space-x-10">
-              {/* Posts */}
               <p>{otherUserData.otherUser.posts.length} Posts</p>
-              <button>
+              <button
+              onClick={()=>handleShowFollow(true)}
+              >
                 {otherUserData.otherUser.followers.length} Followers
               </button>
-              <button>
+              <button
+              onClick={()=>handleShowFollow(false)}
+              >
                 {otherUserData.otherUser.following.length} Following
               </button>
             </div>
@@ -142,6 +162,10 @@ useEffect(() => {
                     Loading......
                 </div>
             )
+        }
+        {
+          isShowFollow && 
+          <OtherUserFollow setIsShowFollow = {setIsShowFollow} Follow={Follow}/>
         }
     </div>
   );

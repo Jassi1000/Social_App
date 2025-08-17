@@ -3,12 +3,16 @@ import { axiosInstance } from '../lib/axios';
 
 export const useUserDataStore = create((set,get) => ({
     userData: null,
+    messageNotification:null,
     userPosts: [],
     userSavedPosts:[],
     getUserData: async () => {
         try {
             const response = await axiosInstance.get('/getData/getUserDetails');
             set({ userData: response.data.user });
+            set({messageNotification:response.data.unreadMessageCount});
+            console.log("User Response fetched successfully:",response );
+            console.log("Unread Messages fetched successfully:",get().messageNotification );
             console.log("User data fetched successfully:",get().userData );
         } catch (error) {
             console.error("Error fetching user data:", error);
@@ -36,5 +40,9 @@ export const useUserDataStore = create((set,get) => ({
             console.error("Error fetching the user posts: ",error);
         }
     },
+    setMessageNotification : (dec) => {
+        set((state)=>({messageNotification : dec ?state.messageNotification-1 : state.messageNotification+1}));
+        console.log("The value is of messageNotification --> ",get().messageNotification);
+    }
 
 }));

@@ -17,12 +17,13 @@ import { GoHomeFill } from "react-icons/go";
 import { MdOutlineAddBox } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { RiLogoutBoxLine } from "react-icons/ri";
-import { Bold, Search } from "lucide-react";
+import { Bold, Search, Send } from "lucide-react";
 import React from "react";
 import SearchBar from "./Components/SearchBar";
-import { fontWeight } from "@mui/system";
 import CreateStory from "./Pages/CreateStory";
 import Archieve from "./Pages/Archieve";
+import Chat from "./Pages/Chat";
+import { useUserDataStore } from "./Store/userData";
 
 
 
@@ -30,6 +31,7 @@ function App() {
 
 
   const { checkAuth , loading ,isAuthenticated , logout} = useAuthStore();
+  const {messageNotification} = useUserDataStore();
   const navigate = useNavigate();
   const [isSearching,setIsSearching] = useState(false);
 
@@ -68,7 +70,7 @@ function App() {
 
   return (
     // flex items-center justify-between w-screen h-screen 
-    <div className="relative min-h-screen flex items-center justify-center px-4">
+    <div className="relative min-h-screen flex items-center justify-center">
       {/* Background SVG */}
       {/* <img
         src="./assets/dashboard_background.svg"
@@ -91,6 +93,19 @@ function App() {
             <Search className="w-7 h-7 "/>
             <p className="text-lg">Search</p>
             </button>
+            <NavLink to="/Chat" className={({ isActive }) => `px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 transition-colors duration-200 ${isActive ? "font-bold" : ""}`}>
+            <div className="relative">
+            <Send  className="w-7 h-7"/>
+            {
+                messageNotification > 0 &&
+                <div className="absolute -top-2 -right-2 flex items-center justify-center rounded-full w-[20px] h-[20px] bg-red-600 border-white border">
+                  {console.log(messageNotification)}
+                  <p className="text-white text-xs">{messageNotification}</p>
+                </div>
+            }
+            </div>
+            <p className="text-lg pr-3 pl-2">Chat</p>
+            </NavLink>
             <NavLink to="/CreatePost" className={({ isActive }) => `px-2 py-2 rounded flex items-center justify-center w-full space-x-10 hover:bg-gray-200 transition-colors duration-200 ${isActive ? "font-bold" : ""}`}>
             <MdOutlineAddBox  fontSize={"1.8rem"}/>
             <p className="text-lg">Create</p>
@@ -119,6 +134,7 @@ function App() {
         <Route path="/dashboard" element={isAuthenticated ? (<Dashboard/>) : (<Login />)} />
         <Route path="/login" element={isAuthenticated ? (<Dashboard/>) : (<Login />)} />
         <Route path="/profile" element={isAuthenticated ? (<Profile/>) : (<Login />)} />
+        <Route path="/Chat" element={isAuthenticated ? (<Chat/>) : (<Login />)} />
         <Route path="/CreatePost" element={isAuthenticated ? (<CreatePost/>) : (<Login />)} />
         <Route path="/CreateStory" element={isAuthenticated ? (<CreateStory/>) : (<Login />)} />
         <Route path="/OtherUserProfile" element={isAuthenticated ? (<OtherUserProfile/>) : (<Login />)} />

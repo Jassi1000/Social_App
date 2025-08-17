@@ -1,6 +1,8 @@
 const User = require("../Models/User");
 const Post = require("../Models/Post");
 const Story = require("../Models/Story");
+const Chat = require("../Models/Chat");
+const Message = require("../Models/Message");
 
 exports.getPosts = async (req,res) => {
     try{
@@ -132,7 +134,18 @@ exports.getOtherUserDetails = async (req, res) => {
         if(!user){
             return res.status(404).json({ message: 'User not found' });
         }
-        const otherUser = await User.findById({_id: otherUserId}).select('username profilePicture bio followers following posts privacy');
+        const otherUser = await User.findById({_id: otherUserId})
+        .select('username profilePicture bio followers following posts privacy')
+        .populate(
+            [{
+                path : "followers",
+                select : "_id username profilePicture"
+            },
+            {
+                path : "following",
+                select : "_id username profilePicture"
+            }]
+        );
         const otherUserPosts = await Post.find({userid:otherUserId});
         if(!otherUser){
             return res.status(404).json({ message: 'Other user not found' });
@@ -163,7 +176,9 @@ exports.getUserDetails = async (req, res) => {
         if(!user){
             return res.status(404).json({ message: 'User not found' });
         }
-        return res.status(200).json({ message: 'User details fetched successfully', user });
+        const getsum = await Chat.find({members:userId , [`unreadMessagesCount.${userId}`] : {$gt : 0}});
+        const unreadMessageCount = getsum.length || 0;
+        return res.status(200).json({ message: 'User details fetched successfully', user ,unreadMessageCount });
     }
     catch(err) {
         console.error(err);
@@ -210,6 +225,28 @@ exports.searchUser = async (req,res) => {
         const users = await User.find({username : {$regex : query , $options: 'i'} })
                                .select("username profilePicture _id").limit(10);
         res.status(200).json({message : "Here are the users based on your search" ,users });
+    }
+    catch(err){
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.searchChats = async (req,res) => {
+    try{
+        const userid = req.user.id;
+        const query = req.query.query;
+        if(!query){
+            return res.status(400).json({ error: "Query param is required" });
+        }
+
+        const chatUsers = await User.find({
+            username : {$regex : query , $options: 'i'},
+            followers : userid,
+            following : userid
+        })
+        .select("username profilePicture _id").limit(10);
+        res.status(200).json({message : "Here are the users based on your search" , chatUsers });
     }
     catch(err){
         console.error(err);
@@ -265,6 +302,63 @@ exports.getArchievedStories = async (req,res) => {
     }
     catch(err){
         console.error('Error fetching Archieved Stories:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.getUserChats = async (req,res) => {
+    try{
+        const userid = req.user.id;
+        if(!userid){
+            return res.status(401).json({message:"The userid is missing;"})
+        }
+        const userChats = await Chat.find(
+            {members : userid}
+        )
+        .populate({
+            path : "members",
+            select : "_id username profilePicture"
+        })
+        .sort({lastMessageAt : -1})
+        .lean()                             //This convert it to object so that we can easily apply filter and other functionality 
+                                            //If we donot do that there is problem with the populated stuff it donot come in the filter
+        userChats.forEach((chat)=>{
+            chat.members = chat.members.filter((member) => member._id.toString() !== userid)
+        })
+
+        return res.status(201).json({message:"Chats fetched Succesfully" , userChats})
+    }
+    catch(err){
+        console.error('Error fetching Chats:', err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+exports.getMessagesWithUser = async (req,res) => {
+    try{
+        const userid = req.user.id;
+        console.log("THis is working");
+        const chatId = req.params.chatId;
+        console.log("chatId:", chatId);
+console.log("userid:", userid);
+
+if (!userid) {
+    console.log("userid missing");
+    return res.status(401).json({ message: "The userid is missing;" });
+}
+
+if (!chatId) {
+    console.log("chatId missing");
+    return res.status(401).json({ message: "The ChatId is missing;" });
+}
+        const areUnread = await Message.updateMany({chatId,readAt : null} ,{ readAt : new Date()})
+        const isread = areUnread.matchedCount > 0 ? true : false;
+        const messages = await Message.find({chatId});
+        const chats = await Chat.findByIdAndUpdate(chatId,{$set:{[`unreadMessagesCount.${userid}`]:0}},{new:true})
+        return res.status(201).json({message:"Message With User fetched Succesfully" , messages,isread})
+    }
+    catch(err){
+        console.error('Error fetching Chat with user:', err);
         return res.status(500).json({ message: 'Internal server error' });
     }
 }

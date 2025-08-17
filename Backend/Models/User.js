@@ -56,11 +56,6 @@ const userSchema = new mongoose.Schema(
             ref: 'Post',
             default: []
         },
-        chatFriends: {
-            type: [mongoose.Schema.Types.ObjectId],
-            ref: 'User',
-            default: []
-        },
         comments: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: 'Comment',

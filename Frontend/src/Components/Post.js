@@ -105,6 +105,8 @@ const Post = ({post}) => {
         }
         setOtherUserId(post.userid._id);
         // navigate('/OtherUserProfile/:otherUserid'); --> This is needed when you want to search the user
+        // The above will help to remount the OtherUSerProfile because the url is changed 
+        // if we use the same then it not remount it just like there already so the local state donot change
         navigate('/OtherUserProfile');
     }
 

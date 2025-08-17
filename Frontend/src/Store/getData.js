@@ -12,6 +12,7 @@ export const useDataStore = create((set,get) => ({
     following:[],
     followers:[],
     searchResults:[],
+    searchChats:[],
 
     // CommentsOnPost: {},
     getPosts: async () => {
@@ -111,9 +112,27 @@ export const useDataStore = create((set,get) => ({
         }
     },
 
+    getsearchUsers: async(query) => {
+        if(!query || query.trim() === ""){
+            set({searchChats:[]});
+            return;
+        }
+
+        try{
+            set({searchLoading:true});
+            const response = await axiosInstance.get(`/getData/getsearchChats?query=${query}`);
+            set({searchChats:response.data.chatUsers,searchLoading:false})
+        }
+        catch(err){
+            console.error("Search error:", err);
+            set({ searchChats: [], searchLoading: false });
+        }
+    },
+
     setSearchLoading : (is)=> set({searchLoading:is}),
 
     clearSearch: () => set({ searchResults: [] }),
+    clearSearchChats : () => set({ searchChats : []}),
 
     getStories: async () => {
         set({dataLoading: true});
@@ -130,6 +149,7 @@ export const useDataStore = create((set,get) => ({
             set({dataLoading: false});
         }
     },
+
     getArchievedStories: async () => {
         set({dataLoading: true});
         try {
