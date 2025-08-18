@@ -58,12 +58,12 @@ const userSchema = new mongoose.Schema(
         },
         comments: {
             type: [mongoose.Schema.Types.ObjectId],
-            ref: 'Comment',
+            ref: 'Post',               //There should be Comments
             default: []
         },
         likes: {
             type: [mongoose.Schema.Types.ObjectId],
-            ref: 'Like',
+            ref: 'Post',              //There should be Likes
             default: []
         },
         followRequests:{

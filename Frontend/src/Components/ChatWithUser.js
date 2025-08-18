@@ -3,14 +3,22 @@ import { useChatStore } from '../Store/chat'
 import { useNavigate } from 'react-router-dom';
 import { useDataStore } from '../Store/getData';
 import { useUserDataStore } from '../Store/userData';
-import { Smile } from 'lucide-react';
+import { Smile, Video } from 'lucide-react';
+import VideoCall from './VideoCall';
+import { useMediaSoupStore } from '../Store/mediaSoup';
+import { joinRoom } from '../lib/mediaSoup/joinRoom';
+import { createSendTransport } from '../lib/mediaSoup/createSendTransport';
+import { createRecvTransport } from '../lib/mediaSoup/createRecvTransport';
 
 
 const ChatWithUser = () => {
     const {selectedChat,getMessagesWithUser,messages,sendNewMessage} = useChatStore();
     const {userData} = useUserDataStore();
     const {setOtherUserId} = useDataStore();
+    const {device} = useMediaSoupStore();
     const [newMessage,setNewMessage] = useState('');
+    const [isVideoCall,setIsVideoCall] = useState(false);
+
     const containerRef = useRef(null);
 
     const navigate = useNavigate();
@@ -44,16 +52,26 @@ const ChatWithUser = () => {
         sendNewMessage(newMessage);
         setNewMessage('');
     }
+
+    const handleVideoCall = async() => {
+        if(!device) await joinRoom(selectedChat._id);
+        await createSendTransport(selectedChat._id);
+        await createRecvTransport(selectedChat._id);
+        setIsVideoCall(true);
+    }
   return (
     <div className='w- flex flex-col  h-full '>
         {/* Other User Profile (Other functionality can be added like video call icon)*/}
-        <div className='flex items-center justify-start w-full  p-2  space-x-2 border-b-2'>
+        <div className='flex items-center justify-between w-full  p-2  space-x-2 border-b-2'>
             <div className="flex items-center  mb-2 px-5 space-x-2">
             <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0 ">
                 <img src={selectedChat.members[0].profilePicture} className="w-full h-full object-cover block rounded-full"></img>
             </div>
             <button className="font-bold text-sm" onClick={otherUserHandler}>{selectedChat.members[0].username}</button>
             </div>
+            <button className="flex items-center  mb-2 px-5 space-x-2" onClick={handleVideoCall}>
+                <Video className="w-8 h-8"/>
+            </button>
         </div>
 
         <div ref = {containerRef} className='flex flex-col items-center w-full  h-4/5 overflow-y-auto will-change-transform p-2 border-b-2'>
@@ -120,6 +138,10 @@ const ChatWithUser = () => {
             </button>
             </div>
         </div>
+        {
+            isVideoCall && 
+            <VideoCall setIsVideoCall = {setIsVideoCall} chatId = {selectedChat._id}/>
+        }
     </div>
   )
 }

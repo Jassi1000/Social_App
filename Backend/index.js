@@ -15,6 +15,7 @@ const createRouter = require('./Routers/create');
 const interactionRouter = require('./Routers/interaction');
 const getRouter = require('./Routers/getData');
 const { archieveExpiredStories } = require('./Jobs/archieveExpiredStories');
+const deleteRouter = require('./Routers/delete');
 
 app.use(cors({
   origin: [process.env.CLIENT_URL,"http://localhost:3001"],
@@ -30,6 +31,7 @@ app.use(fileUpload({
 app.use('/api/v1', router);
 app.use('/api/v1/update', Router);
 app.use('/api/v1/create', createRouter);
+app.use('/api/v1/delete',deleteRouter);
 app.use('/api/v1/interactions', interactionRouter);
 app.use('/api/v1/getData', getRouter);
 cloudinaryConnect();

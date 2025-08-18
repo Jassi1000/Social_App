@@ -11,6 +11,7 @@ import { useDataStore } from "../Store/getData";
 import { Heart ,MessageCircle,Bookmark} from "lucide-react";
 import { useInteractionStore } from "../Store/interaction";
 import { Smile } from 'lucide-react';
+import { useDeleteStore } from "../Store/delete";
 
 
 const PassivePost = ({post}) =>{
@@ -18,6 +19,7 @@ const PassivePost = ({post}) =>{
 
     const {setOtherUserId} = useDataStore();
     const {likePost,commentPost,savePost} = useInteractionStore();
+    const {deletePost} = useDeleteStore();
 
     const [showPost,setShowPost] = useState(false);
     const {userData} = useUserDataStore();
@@ -88,6 +90,14 @@ const PassivePost = ({post}) =>{
         console.log("Post Saved: ", post._id ,"Status",!isSaved);
     }
 
+    const handleDeletePost = async () => {
+        const res = await deletePost(post._id);
+        if(res){
+            setShowPost(!showPost);
+            navigate("/Profile");
+        }
+    }
+
         function getCustomTimeAgo(dateString) {
   const raw = formatDistanceToNowStrict(new Date(dateString)); // e.g., "2 hours"
   return raw
@@ -156,6 +166,8 @@ const PassivePost = ({post}) =>{
             {
                 showPost && 
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50  z-50 flex items-center justify-center" >
+
+
                     <button className="text-white fixed top-2 right-7" onClick={showMePost}>
                         <X className="w-8 h-8"/>
                     </button>
@@ -198,6 +210,10 @@ const PassivePost = ({post}) =>{
                                     <img src={post.userid._id ? post.userid.profilePicture : userData.profilePicture} className="w-full h-full object-cover rounded-full"></img>
                                 </div>
                                 <button className="font-bold text-sm" onClick={()=>post.userid._id ? otherUserHandleFromComment(post.userid._id) : otherUserHandleFromComment(userData._id)}>{post.userid._id ? post.userid.username : userData.username}</button>
+                                {
+                                    post.userid === userData._id && 
+                                    <button onClick={handleDeletePost}>delete</button>
+                                }
                             </div>
 
                             {/* To Show the comments on the Post */}

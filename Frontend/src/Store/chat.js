@@ -2,6 +2,8 @@ import {create} from 'zustand';
 import { io } from 'socket.io-client';
 import { axiosInstance } from '../lib/axios';
 import { useUserDataStore } from './userData';
+import { useMediaSoupStore } from './mediaSoup';
+import { consumeMedia } from '../lib/mediaSoup/consumeMedia';
 
 export const useChatStore = create((set,get)=>({
     socket:null,
@@ -55,6 +57,28 @@ export const useChatStore = create((set,get)=>({
             const chatId = get().selectedChat;
         if(chatId && (!isInc || chatId._id !== isInc)) console.log("Here is the Chat id --> ",chatId._id);
             else useUserDataStore.getState().setMessageNotification(false);
+        })
+
+        //For mediaSoup
+        socket.on("mediaSoup:newProducer",async({producerId,kind,socketId})=>{
+            const {recvTransport,device} = useMediaSoupStore.getState();
+            console.log("getting the media --> ");
+            if(!recvTransport) return;
+            console.log("Get the media of other user and have receive transport")
+            const chatId = get().selectedChat._id;
+            const consumer = await consumeMedia({
+                chatId,
+                recvTransport,
+                device,
+                producerId,
+                socketId
+            })
+        })
+
+        socket.on("mediaSoup:userLeft",({socketId})=>{
+            console.log("The user with socket id ",socketId," leave the Call");
+
+            useMediaSoupStore.getState().removeConsumerBySocketId(socketId);
         })
 
         socket.on("error",({message})=>{
