@@ -2,7 +2,7 @@ const express = require('express');
 const {Server} = require('socket.io');
 const http = require('http');
 const { protectSocket } = require('../Middeware/protect');
-const { addUserSocket, removeUserSocket, getOnlineUsers } = require('../Jobs/mapSocketid');
+const { addUserSocket, removeUserSocket, getOnlineUsers, getSocketId } = require('../Jobs/mapSocketid');
 const { handleSendMessage } = require('../Controller/socketChatControl');
 const { createWorker } = require('../MediaSoup/mediaSoupServer');
 const { getOrCreateRoom, createWebRtcTransport, getRoom, closePeer } = require('../MediaSoup/mediaSoupRoomMan');
@@ -90,7 +90,7 @@ io.on('connection',(socket)=>{
 
     // This is to produce the stream from the particular user 
     // identify by the transportId 
-    socket.on("mediaSoup:produce",async({chatId,transportId,kind,rtpParameters },callback)=>{
+    socket.on("mediaSoup:produce",async({chatId,transportId,kind,rtpParameters,otherPerson,myDetails},callback)=>{
         const room = getRoom(chatId);
         const peer = room.peers[socket.id];
 
@@ -105,6 +105,14 @@ io.on('connection',(socket)=>{
             kind,
             socketId:socket.id
         });
+
+        const otherPersonId = getSocketId(otherPerson);
+        if(otherPersonId && !room.peers[otherPersonId] ){
+            io.to(otherPersonId).emit("mediaSoup:IncomingCall",({
+                CallerDetail : myDetails,
+                chatId
+            }))
+        } 
 
         callback({id : producer.id});
     })

@@ -24,6 +24,7 @@ import CreateStory from "./Pages/CreateStory";
 import Archieve from "./Pages/Archieve";
 import Chat from "./Pages/Chat";
 import { useUserDataStore } from "./Store/userData";
+import IncomingCalls from "./Components/IncomingCall";
 
 
 
@@ -31,9 +32,16 @@ function App() {
 
 
   const { checkAuth , loading ,isAuthenticated , logout} = useAuthStore();
-  const {messageNotification} = useUserDataStore();
+  const {messageNotification,IncomingCall} = useUserDataStore();
   const navigate = useNavigate();
   const [isSearching,setIsSearching] = useState(false);
+  const [isIncomingCall,setIsIncomingCall] = useState(false);
+
+  useEffect(()=>{
+    if(IncomingCall){
+      setIsIncomingCall(true);
+    }
+  },[IncomingCall])
 
   // Check authentication status on app load
   useEffect(() => {
@@ -127,6 +135,10 @@ function App() {
     {
       isSearching && 
       <SearchBar setIsSearching = {setIsSearching}/>
+    }
+    {
+      isIncomingCall && 
+      <IncomingCalls setIsIncomingCall = {setIsIncomingCall} IncomingCall={IncomingCall}/>
     }
       <Routes>
         <Route path="/" element={isAuthenticated ? (<Dashboard/>) : (<Login />)} />

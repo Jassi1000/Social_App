@@ -29,7 +29,7 @@ const VideoCallContainer = ({setIsVideoCall,chatId}) => {
             timeoutRef.current = null;
         }
         
-    }, [consumers]);
+    }, [consumers]); 
     
     const handleCloseCall = () => {
         leaveCall(chatId)

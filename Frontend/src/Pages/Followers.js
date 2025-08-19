@@ -33,7 +33,7 @@ const Followers = () => {
                 followers.length > 0 &&
                 followers.map((followerUser) => (
                     !removed.includes(followerUser._id) &&
-                    <div key={followerUser._id} className='border-b-2'>
+                    <div key={followerUser._id} className='border-b-2 mt-2'>
                         <div className="flex items-center w-full  mb-2 space-x-2">
                             <div className="w-[100px] h-[100px] rounded-full ">
                                 <img src={followerUser.profilePicture} className="w-full h-full object-cover rounded-full"></img>

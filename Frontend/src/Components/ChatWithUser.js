@@ -55,7 +55,7 @@ const ChatWithUser = () => {
 
     const handleVideoCall = async() => {
         if(!device) await joinRoom(selectedChat._id);
-        await createSendTransport(selectedChat._id);
+        await createSendTransport(selectedChat._id,selectedChat.members[0]._id); 
         await createRecvTransport(selectedChat._id);
         setIsVideoCall(true);
     }

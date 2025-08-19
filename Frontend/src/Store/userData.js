@@ -4,6 +4,7 @@ import { axiosInstance } from '../lib/axios';
 export const useUserDataStore = create((set,get) => ({
     userData: null,
     messageNotification:null,
+    IncomingCall : null,
     userPosts: [],
     userSavedPosts:[],
     getUserData: async () => {
@@ -43,6 +44,8 @@ export const useUserDataStore = create((set,get) => ({
     setMessageNotification : (dec) => {
         set((state)=>({messageNotification : dec ?state.messageNotification-1 : state.messageNotification+1}));
         console.log("The value is of messageNotification --> ",get().messageNotification);
-    }
+    },
+
+    setIncomingCall : (callDetail) => set({IncomingCall:callDetail})
 
 }));

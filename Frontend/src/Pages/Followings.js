@@ -33,8 +33,8 @@ const Followings = () => {
                 following.length > 0 &&
                 following.map((followingUser) => (
                     !unfollowed.includes(followingUser._id) &&
-                    <div key={followingUser._id}>
-                        <div className="flex items-center w-full mb-2 space-x-2">
+                    <div key={followingUser._id} className='border-b-2 mt-2'>
+                        <div className="flex items-center w-full  mb-2 space-x-2">
                             <div className="w-[100px] h-[100px] rounded-full ">
                                 <img src={followingUser.profilePicture} className="w-full h-full object-cover rounded-full"></img>
                             </div>

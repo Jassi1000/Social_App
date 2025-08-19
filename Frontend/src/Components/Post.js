@@ -137,6 +137,7 @@ const Post = ({post}) => {
     .replace('year', 'yr');
 }
 //mb-4
+  
   return (
     <div className="flex flex-col items-center justify-center w-full   p-4 border-b-2">
 
@@ -149,7 +150,7 @@ const Post = ({post}) => {
         </div>
 
         {console.log("Rendering Post:", post)}
-        <div className= "w-full h-[500px] overflow-hidden flex-shrink-0">
+        <div className= "w-full h-[600px] overflow-hidden flex-shrink-0">
             {
                     isImage(post.content) ? 
 
@@ -256,7 +257,7 @@ const Post = ({post}) => {
                         )}
                         {/* This is to send the the comment  */}
                                 <div>
-                                    <div className="flex items-center mb-2 pt-2 border-t-2">
+                                    <div className="flex items-center mb-2 space-x-2 pt-2 border-t-2">
                                         <div className="w-[40px] h-[40px] rounded-full ">
                                             <img src={userData.profilePicture} className="w-full h-full object-cover rounded-full"></img>
                                         </div>

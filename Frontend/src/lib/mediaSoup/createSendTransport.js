@@ -1,10 +1,12 @@
 import { useChatStore } from "../../Store/chat"
 import { useMediaSoupStore } from "../../Store/mediaSoup";
+import { useUserDataStore } from "../../Store/userData";
 
 
-export const createSendTransport = async (chatId) => {
+export const createSendTransport = async (chatId,otherPerson) => {
     const socket = useChatStore.getState().socket;
     const device = useMediaSoupStore.getState().device;
+    const userData = useUserDataStore.getState().userData;
 
     return new Promise ((resolve,reject)=>{
         socket.emit("mediaSoup:createTransport",{chatId,direction : 'send'},async(transportOptions)=>{
@@ -28,7 +30,13 @@ export const createSendTransport = async (chatId) => {
                         kind,
                         rtpParameters,
                         chatId,
-                        transportId:sendTransport.id
+                        transportId:sendTransport.id,
+                        otherPerson,
+                        myDetails : {
+                            _id : userData._id,
+                            username:userData.username,
+                            profilePicture:userData.profilePicture
+                        }
                     },({id})=>{
                         callback({id});
                     })

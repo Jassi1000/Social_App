@@ -7,6 +7,7 @@ const Message = require("../Models/Message");
 exports.getPosts = async (req,res) => {
     try{
         const userId = req.user.id;
+        const {skip = 0} = req.query;
         if(!userId){
             return res.json("userId is available");
         }
@@ -15,7 +16,17 @@ exports.getPosts = async (req,res) => {
             return res.json("The User doesnot found");
         }
         const followings = user.following;
-        const posts = await Post.find({userid : {$in : followings}}).populate({path:"userid",select:"username _id profilePicture"});
+        // const posts = await Post.find({userid : {$in : followings}}).populate({path:"userid",select:"username _id profilePicture"});
+        const postsWithOutPop = await Post.aggregate([
+            {$match : {userid : {$in : followings}}},
+            {$sample : { size : 100 }},
+            {$skip : parseInt(skip)},
+            {$limit : 5}
+        ])
+        const posts = await Post.populate(postsWithOutPop,{
+            path:"userid",
+            select:"username _id profilePicture"
+        })
         if(!posts || posts.length === 0){
             return res.json("There is no posts available");
         }

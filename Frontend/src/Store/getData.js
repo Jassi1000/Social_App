@@ -15,21 +15,57 @@ export const useDataStore = create((set,get) => ({
     searchChats:[],
 
     // CommentsOnPost: {},
-    getPosts: async () => {
+
+    //This is for the all posts  
+    // getPosts: async () => {
+    //     set({dataLoading: true});
+    //     try {
+    //         const response = await axiosInstance.get('/getData/getPosts');
+    //         console.log("Response fetched successfully:", response);
+    //         if (response.data.posts.length === 0) {
+    //             console.log("No posts available.");
+    //         }
+    //         set({ posts: response.data.posts });
+    //     } catch (error) {
+    //         console.error("Get Posts Error:", error);
+    //     } finally {
+    //         set({dataLoading: false});
+    //     }
+    // },
+
+    //This is the for the posts with limit 5
+
+    getPosts: async (append,skip) => {
         set({dataLoading: true});
         try {
-            const response = await axiosInstance.get('/getData/getPosts');
+            const response = await axiosInstance.get(`/getData/getPosts?skip=${skip}`);
             console.log("Response fetched successfully:", response);
+            const newPosts = response.data.posts || [];
             if (response.data.posts.length === 0) {
                 console.log("No posts available.");
             }
-            set({ posts: response.data.posts });
+            let unique = newPosts;
+            set((state)=>{
+                const existingPosts = state.posts;
+
+                // Filter newPosts to exclude duplicates (based on _id)
+                const uniqueNewPosts = newPosts.filter(
+                    (newPost) => !existingPosts.some((existingPost) => existingPost._id === newPost._id)
+                );
+                unique = uniqueNewPosts;
+                return {
+                    posts: append ? [...existingPosts, ...uniqueNewPosts] : newPosts,
+                };
+            });
+            return unique;
         } catch (error) {
             console.error("Get Posts Error:", error);
         } finally {
             set({dataLoading: false});
         }
     },
+
+    
 
     // The problem we are getting with this --> it re-renders every post if we call it for one Post
     // and Another problem is it does the re-render and it is like refreshes the page

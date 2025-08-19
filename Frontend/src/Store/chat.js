@@ -81,6 +81,13 @@ export const useChatStore = create((set,get)=>({
             useMediaSoupStore.getState().removeConsumerBySocketId(socketId);
         })
 
+        socket.on("mediaSoup:IncomingCall",({CallerDetail,chatId})=>{
+            useUserDataStore.getState().setIncomingCall({
+                CallerDetail,
+                chatId
+            })
+        });
+
         socket.on("error",({message})=>{
             console.log("The error is --> ",message);
         })
